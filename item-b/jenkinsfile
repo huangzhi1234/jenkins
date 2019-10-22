@@ -17,8 +17,8 @@ node {
   TOMCAT_NAME=tomcat8
   TOMCAT_HOME=/usr/local/tomcat/TOMCAT_NAME
    wwwROOT=$TOMCAT_HOME/webapps/ROOT
-    if[ -d $wwwROOT ]; then
-      mv  $wwwROOT /data/back/${TOMCAT_NAME}-$(date + "%F_%T")
+    if[ -d $wwwROOT ];  then
+      mv  $wwwROOT /data/backup/${TOMCAT_NAME}-$(date + "%F_%T")
     fi
       unzip ${WORKSPACE}/target/*.war  -d $wwwROOT
       ps -ef | grep tomcat | grep -v grep | awk '{print $2}'  | sed -e "s/^/kill -9 /g" | sh -

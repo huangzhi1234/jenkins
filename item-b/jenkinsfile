@@ -1,0 +1,29 @@
+node {
+   def mvnHome
+   stage('checkout') { // for display purposes
+   checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '9c5a5f00-ec62-4a11-8c86-d73019e68b2e', url: 'https://github.com/huangzhi1234/testcode.git']]])
+   }
+   stage('maven build') {
+     echo "start maven build...."
+      sh '''export JAVA_HOME=/usr/java/jdk1.8.0_181
+      /usr/local/file/maven/bin/mvn clean package -Dmaven.test.skip=true'''
+      echo "end maven build...."
+   }
+   stage('deploy') {
+      echo "start deploy...."
+      sh '''export JAVA_HOME=/usr/java/jdk1.8.0_181
+  TOMCAT_NAME=tomcat8
+  TOMCAT_HOME=/usr/local/tomcat/TOMCAT_NAME
+   wwwROOT=$TOMCAT_HOME/webapps/ROOT
+    if[ -d $wwwROOT ]; then
+      mv  $wwwROOT /data/back/${TOMCAT_NAME}-$(date + "%F_%T")
+    fi
+      unzip ${WORKSPACE}/target/*.war  -d $wwwROOT
+      ps -ef | grep tomcat | grep -v grep | awk '{print $2}'  | sed -e "s/^/kill -9 /g" | sh -
+      /bin/bash  $TOMCAT_NAME/bin/startup.sh'''
+      echo "end deploy...."
+   }
+   stage('test') {
+      echo "test...."
+   }
+}

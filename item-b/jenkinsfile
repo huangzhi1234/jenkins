@@ -5,7 +5,9 @@ node {
    }
    stage('maven build') {
      echo "start maven build...."
+    
       sh '''export JAVA_HOME=/usr/java/jdk1.8.0_181
+      cd /var/lib/jenkins/workspace/pipeline-test-A/dbm_mgr
       /usr/local/file/maven/bin/mvn clean package -Dmaven.test.skip=true'''
       echo "end maven build...."
    }
